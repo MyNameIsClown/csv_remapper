@@ -91,29 +91,25 @@ class CSVRemapperApp:
         if col_type == "Texto":
             return col.astype(str)
         elif col_type == "Numero negativo":
-            valid_col = col.apply(lambda x: self.is_valid_negative_number(x) if pd.notna(x) else True)
+            valid_col = col.apply(lambda x: self.is_valid_to_convert_to_number(x) if pd.notna(x) else True)
             if valid_col.all():
-                return col.apply(lambda x: float(str(x).replace(",", ".")) if pd.notna(x) else x)
+                return col.apply(lambda x: float(str(x).replace(".", "").replace(",", ".")) * -1 if pd.notna(x) else x)
             else:
                 return None
         elif col_type == "Numero positivo":
-            valid_col = col.apply(lambda x: self.is_valid_positive_number(x) if pd.notna(x) else True)
+            valid_col = col.apply(lambda x: self.is_valid_to_convert_to_number(x) if pd.notna(x) else True)
             if valid_col.all():
-                return col.apply(lambda x: float(str(x).replace(",", ".")) if pd.notna(x) else x)
+                return col.apply(lambda x: float(str(x).replace(".", "").replace(",", ".")) if pd.notna(x) else x)
             else:
                 return None
-
-    def is_valid_negative_number(self, value):
+            
+    def is_valid_to_convert_to_number(self, value):
         try:
-            return float(str(value).replace(",", ".")) < 0
+            float(str(value).replace(".", "").replace(",", "."))
+            return True
         except ValueError:
             return False
-
-    def is_valid_positive_number(self, value):
-        try:
-            return float(str(value).replace(",", ".")) >= 0
-        except ValueError:
-            return False
+        
         
 if __name__ == "__main__":
     root = tk.Tk()
