@@ -135,7 +135,7 @@ class CSVRemapperApp:
             entry = ttk.Entry(frame, textvariable=var)
             entry.pack(side='left', fill='x', expand=True, padx=5)
 
-            type_menu = ttk.Combobox(frame, textvariable=type_var, values=["Numero negativo", "Numero positivo", "Texto"])
+            type_menu = ttk.Combobox(frame, textvariable=type_var, values=["Numero negativo", "Numero positivo", "Texto", "Fecha"])
             type_menu.pack(side='left', padx=5)
 
         self.save_button.config(state=tk.NORMAL)
@@ -184,6 +184,12 @@ class CSVRemapperApp:
             if valid_col.all():
                 return col.apply(lambda x: self.convert_to_number(x) if pd.notna(x) else x)
             else:
+                return None
+        elif col_type == "Fecha":
+            try:
+                return pd.to_datetime(col, errors='coerce')
+            except Exception as e:
+                print(f"Error converting column to date: {e}")
                 return None
 
     def merge_columns(self, col1, col2):
